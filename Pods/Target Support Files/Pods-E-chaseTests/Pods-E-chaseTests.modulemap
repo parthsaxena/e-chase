@@ -1,0 +1,6 @@
+framework module Pods_E_chaseTests {
+  umbrella header "Pods-E-chaseTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
