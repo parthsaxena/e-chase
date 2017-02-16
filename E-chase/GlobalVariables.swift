@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 struct GlobalVariables {
     static let API_KEY = "6c9b3cba9a84f288d1ded430ba3bd8c4"
@@ -17,4 +18,6 @@ struct GlobalVariables {
     
     static var productViewing: [AnyObject]!
     static var productsInCart: [AnyObject]?
+    
+    static var location: CLLocation!
 }

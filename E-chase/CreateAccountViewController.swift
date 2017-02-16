@@ -40,10 +40,12 @@ class CreateAccountViewController: UIViewController {
                 if success {
                     // successfully created user's account
                     print("Successfully created user's account")
+                    
                     let alert = UIAlertController(title: "Awesome!", message: "Your account has been created. Let's get started!", preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
-                        let vc = self.storyboard?.instantiateViewController(withIdentifier: "AppExplanationVC")
-                        self.performSegue(withIdentifier: "CreateAccountToAppDescription", sender: nil)
+                        DispatchQueue.main.async {
+                            self.performSegue(withIdentifier: "CreateAccountToAppDescription", sender: nil)
+                        }
                     }))
                     self.present(alert, animated: true, completion: nil)
                 } else {
@@ -63,7 +65,7 @@ class CreateAccountViewController: UIViewController {
             if user != nil {
                 // created user in authentication, create user in database
                 if let uid = FIRAuth.auth()?.currentUser?.uid {
-                    let userObject = ["fullname": fullName, "email": email, "uid": uid]
+                    let userObject = ["fullname": fullName, "email": email, "uid": uid, "address":""]
                     FIRDatabase.database().reference().child("users").child(uid).setValue(userObject)
                     completion(true)
                 }

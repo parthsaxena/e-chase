@@ -45,10 +45,10 @@ class ViewProductsViewController: UIViewController, UITableViewDelegate, UITable
         imageView.contentMode = UIViewContentMode.scaleAspectFit
         self.imageNavigationItem.titleView = imageView*/
         
-        self.imageNavigationItem.title = "Search"
-        self.navigationBar.alpha = 1
-        self.navigationBar.barTintColor = UIColor.white
-        self.navigationBar.titleTextAttributes = [ NSFontAttributeName: UIFont(name: "Roboto-Light", size: 24)!, NSForegroundColorAttributeName: UIColor.init(red: 49/255, green: 146/255, blue: 210/255, alpha: 1)]
+        self.navigationController?.navigationItem.title = "Search"
+        self.navigationController?.navigationBar.alpha = 1
+        self.navigationController?.navigationBar.barTintColor = UIColor.white
+        self.navigationController?.navigationBar.titleTextAttributes = [ NSFontAttributeName: UIFont(name: "Roboto-Light", size: 24)!, NSForegroundColorAttributeName: UIColor.init(red: 49/255, green: 146/255, blue: 210/255, alpha: 1)]
         
         self.searchLabel.text = "Search Results for \"\(GlobalVariables.SEARCH_QUERY)\""
         // Uncomment the following line to preserve selection between presentations
@@ -62,9 +62,13 @@ class ViewProductsViewController: UIViewController, UITableViewDelegate, UITable
         if item.tag == 0 {
             // we're here
         } else if item.tag == 1 {
-            
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "OrdersVC")
+            self.present(vc!, animated: false, completion: nil)
         } else if item.tag == 2 {
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "CartVC")
+            self.present(vc!, animated: false, completion: nil)
+        } else if item.tag == 3 {
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "AccountVC")
             self.present(vc!, animated: false, completion: nil)
         }
     }
@@ -77,6 +81,11 @@ class ViewProductsViewController: UIViewController, UITableViewDelegate, UITable
             foundPlaces = true
             searchKeyword(keyword: keyword, coordinate: locValue, radius: 5.0)
         }
+    }
+    
+    @IBAction func backTapped(_ sender: Any) {
+        //self.performSegue(withIdentifier: "BackToMain", sender: nil)
+        self.navigationController?.performSegue(withIdentifier: "BackToMain", sender: nil)
     }
     
     func searchKeyword(keyword: String, coordinate: CLLocationCoordinate2D, radius: Double) {
@@ -189,7 +198,7 @@ class ViewProductsViewController: UIViewController, UITableViewDelegate, UITable
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let product = self.products[indexPath.row] as? [AnyObject] {
             GlobalVariables.productViewing = product
-            self.performSegue(withIdentifier: "ProductTappedToViewProduct", sender: nil)
+            self.navigationController?.performSegue(withIdentifier: "ProductTappedToViewProduct", sender: nil)
         } else {
             let alert = UIAlertController(title: "Sorry!", message: "There was an error processing your request. Please contact support if this issue persists.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))

@@ -14,6 +14,9 @@
 		8B01A4151E21B24300A37F6F /* TopToBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B01A4141E21B24300A37F6F /* TopToBottom.swift */; };
 		8B01A4181E21B36800A37F6F /* BottomToTop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B01A4171E21B36800A37F6F /* BottomToTop.swift */; };
 		8B11D27B1E3F161500CC46B5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B11D27A1E3F161500CC46B5 /* ViewController.swift */; };
+		8B1873441E52B16300ACF299 /* AddressTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1873431E52B16300ACF299 /* AddressTableViewCell.swift */; };
+		8B1873481E540BC000ACF299 /* OrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1873471E540BC000ACF299 /* OrdersViewController.swift */; };
+		8B18734A1E540CE200ACF299 /* OrderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1873491E540CE200ACF299 /* OrderTableViewCell.swift */; };
 		8B190DDF1E2313E30032BC50 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B190DDE1E2313E30032BC50 /* MainViewController.swift */; };
 		8B190DE11E2329370032BC50 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B190DE01E2329370032BC50 /* GlobalVariables.swift */; };
 		8B190DE51E2335110032BC50 /* PlaceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B190DE41E2335110032BC50 /* PlaceTableViewCell.swift */; };
@@ -42,6 +45,8 @@
 		8B3E2CA91E20C83F006C99BF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B3E2CA71E20C83F006C99BF /* LaunchScreen.storyboard */; };
 		8B3E2CB41E20C83F006C99BF /* E_chaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3E2CB31E20C83F006C99BF /* E_chaseTests.swift */; };
 		8B3E2CBF1E20C83F006C99BF /* E_chaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3E2CBE1E20C83F006C99BF /* E_chaseUITests.swift */; };
+		8B7F3D341E501DAB00EF96AB /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7F3D331E501DAB00EF96AB /* AccountViewController.swift */; };
+		8B7F3D3A1E5254FD00EF96AB /* AddAddressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7F3D391E5254FD00EF96AB /* AddAddressViewController.swift */; };
 		9BB01BD8A285A2BE36309767 /* Pods_E_chaseUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2A54D315EC894E8CAA52A3D /* Pods_E_chaseUITests.framework */; };
 		A5811C597579C2580BF9BDCD /* Pods_E_chase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02587B8492056C67398AA8E0 /* Pods_E_chase.framework */; };
 /* End PBXBuildFile section */
@@ -77,6 +82,9 @@
 		8B01A4141E21B24300A37F6F /* TopToBottom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopToBottom.swift; sourceTree = "<group>"; };
 		8B01A4171E21B36800A37F6F /* BottomToTop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomToTop.swift; sourceTree = "<group>"; };
 		8B11D27A1E3F161500CC46B5 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		8B1873431E52B16300ACF299 /* AddressTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressTableViewCell.swift; sourceTree = "<group>"; };
+		8B1873471E540BC000ACF299 /* OrdersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrdersViewController.swift; sourceTree = "<group>"; };
+		8B1873491E540CE200ACF299 /* OrderTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderTableViewCell.swift; sourceTree = "<group>"; };
 		8B190DDE1E2313E30032BC50 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		8B190DE01E2329370032BC50 /* GlobalVariables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
 		8B190DE41E2335110032BC50 /* PlaceTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaceTableViewCell.swift; sourceTree = "<group>"; };
@@ -111,6 +119,8 @@
 		8B3E2CBA1E20C83F006C99BF /* E-chaseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "E-chaseUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B3E2CBE1E20C83F006C99BF /* E_chaseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = E_chaseUITests.swift; sourceTree = "<group>"; };
 		8B3E2CC01E20C83F006C99BF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8B7F3D331E501DAB00EF96AB /* AccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
+		8B7F3D391E5254FD00EF96AB /* AddAddressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddAddressViewController.swift; sourceTree = "<group>"; };
 		C486CE1A80AAF22F4617491B /* Pods-E-chase.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E-chase.debug.xcconfig"; path = "Pods/Target Support Files/Pods-E-chase/Pods-E-chase.debug.xcconfig"; sourceTree = "<group>"; };
 		F2A54D315EC894E8CAA52A3D /* Pods_E_chaseUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_E_chaseUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -228,6 +238,8 @@
 		8B3E2C9D1E20C83F006C99BF /* E-chase */ = {
 			isa = PBXGroup;
 			children = (
+				8B1873471E540BC000ACF299 /* OrdersViewController.swift */,
+				8B1873491E540CE200ACF299 /* OrderTableViewCell.swift */,
 				8B01A40E1E21AABC00A37F6F /* GoogleService-Info.plist */,
 				8B3E2C9E1E20C83F006C99BF /* AppDelegate.swift */,
 				8B190DE01E2329370032BC50 /* GlobalVariables.swift */,
@@ -237,6 +249,9 @@
 				8B190DE81E2367280032BC50 /* ViewProductsTableViewController.swift */,
 				8B2CF3311E461170002FAC05 /* ProductViewController.swift */,
 				8B2CF3331E462CA7002FAC05 /* CartTableViewController.swift */,
+				8B7F3D331E501DAB00EF96AB /* AccountViewController.swift */,
+				8B7F3D391E5254FD00EF96AB /* AddAddressViewController.swift */,
+				8B1873431E52B16300ACF299 /* AddressTableViewCell.swift */,
 				8B3E2CA21E20C83F006C99BF /* Main.storyboard */,
 				8B01A4161E21B24900A37F6F /* Custom Segues */,
 				8B190E061E243D450032BC50 /* Fonts */,
@@ -355,7 +370,7 @@
 				TargetAttributes = {
 					8B3E2C9A1E20C83F006C99BF = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 69TNSUL7ZG;
+						DevelopmentTeam = 642R9A5K29;
 						ProvisioningStyle = Automatic;
 					};
 					8B3E2CAE1E20C83F006C99BF = {
@@ -578,15 +593,20 @@
 				8B190DDF1E2313E30032BC50 /* MainViewController.swift in Sources */,
 				8B01A4111E21AC1D00A37F6F /* CreateAccountViewController.swift in Sources */,
 				8B2CF3361E462E9E002FAC05 /* CartItemTableViewCell.swift in Sources */,
+				8B18734A1E540CE200ACF299 /* OrderTableViewCell.swift in Sources */,
 				8B190DED1E2370D10032BC50 /* SegueFromRight.swift in Sources */,
 				8B190DE91E2367280032BC50 /* ViewProductsTableViewController.swift in Sources */,
 				8B190DE11E2329370032BC50 /* GlobalVariables.swift in Sources */,
 				8B01A4181E21B36800A37F6F /* BottomToTop.swift in Sources */,
 				8B3E2CA11E20C83F006C99BF /* LogInViewController.swift in Sources */,
+				8B7F3D341E501DAB00EF96AB /* AccountViewController.swift in Sources */,
 				8B01A4131E21B16D00A37F6F /* SegueFromLeft.swift in Sources */,
+				8B1873441E52B16300ACF299 /* AddressTableViewCell.swift in Sources */,
 				8B11D27B1E3F161500CC46B5 /* ViewController.swift in Sources */,
+				8B7F3D3A1E5254FD00EF96AB /* AddAddressViewController.swift in Sources */,
 				8B190DEB1E2367B10032BC50 /* ProductTableViewCell.swift in Sources */,
 				8B2CF3321E461170002FAC05 /* ProductViewController.swift in Sources */,
+				8B1873481E540BC000ACF299 /* OrdersViewController.swift in Sources */,
 				8B01A4151E21B24300A37F6F /* TopToBottom.swift in Sources */,
 				8B3E2C9F1E20C83F006C99BF /* AppDelegate.swift in Sources */,
 				8B2CF3341E462CA7002FAC05 /* CartTableViewController.swift in Sources */,
@@ -741,10 +761,10 @@
 			baseConfigurationReference = C486CE1A80AAF22F4617491B /* Pods-E-chase.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 69TNSUL7ZG;
+				DEVELOPMENT_TEAM = 642R9A5K29;
 				INFOPLIST_FILE = "E-chase/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.socify.E-chase";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.parthsaxena.E-chase";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -755,10 +775,10 @@
 			baseConfigurationReference = 77DF84460DB3747F4F63C479 /* Pods-E-chase.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 69TNSUL7ZG;
+				DEVELOPMENT_TEAM = 642R9A5K29;
 				INFOPLIST_FILE = "E-chase/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.socify.E-chase";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.parthsaxena.E-chase";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};

@@ -13,13 +13,13 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         if FIRAuth.auth()?.currentUser != nil {
             DispatchQueue.main.async {
                 let vc = self.storyboard?.instantiateViewController(withIdentifier: "MainVC")
                 self.present(vc!, animated: false, completion: nil)
             }
-        }
+        } 
         
         // Do any additional setup after loading the view.
     }

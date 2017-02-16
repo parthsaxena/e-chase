@@ -20,6 +20,7 @@ class ProductViewController: UIViewController, UITabBarDelegate {
     @IBOutlet weak var locationPhoneLabel: UILabel!
     @IBOutlet weak var locationAddressLabel: UILabel!
     @IBOutlet weak var availablityLabel: UILabel!
+    @IBOutlet weak var productDetailsView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,10 +30,10 @@ class ProductViewController: UIViewController, UITabBarDelegate {
         self.tabBar.selectedItem = self.tabBar.items?[0]
         tabBar.delegate = self
         
-        self.imageNavigationItem.title = "Product"
-        self.navigationBar.alpha = 1
-        self.navigationBar.barTintColor = UIColor.white
-        self.navigationBar.titleTextAttributes = [ NSFontAttributeName: UIFont(name: "Roboto-Light", size: 24)!, NSForegroundColorAttributeName: UIColor.init(red: 49/255, green: 146/255, blue: 210/255, alpha: 1)]
+        self.navigationController?.navigationItem.title = "Product"
+        self.navigationController?.navigationBar.alpha = 1
+        self.navigationController?.navigationBar.barTintColor = UIColor.white
+        self.navigationController?.navigationBar.titleTextAttributes = [ NSFontAttributeName: UIFont(name: "Roboto-Light", size: 24)!, NSForegroundColorAttributeName: UIColor.init(red: 49/255, green: 146/255, blue: 210/255, alpha: 1)]
         // Do any additional setup after loading the view.
     }
 
@@ -40,9 +41,13 @@ class ProductViewController: UIViewController, UITabBarDelegate {
         if item.tag == 0 {
             // we're here
         } else if item.tag == 1 {
-            
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "OrdersVC")
+            self.present(vc!, animated: false, completion: nil)
         } else if item.tag == 2 {
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "CartVC")
+            self.present(vc!, animated: false, completion: nil)
+        } else if item.tag == 3 {
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "AccountVC")
             self.present(vc!, animated: false, completion: nil)
         }
     }
@@ -134,7 +139,10 @@ class ProductViewController: UIViewController, UITabBarDelegate {
         }
         
         let alert = UIAlertController(title: "Item Added to Cart!", message: nil, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "CartVC")
+            self.present(vc!, animated: false, completion: nil)
+        }))
         self.present(alert, animated: true, completion: nil)
     }
     
@@ -143,4 +151,8 @@ class ProductViewController: UIViewController, UITabBarDelegate {
         // Dispose of any resources that can be recreated.
     }
 
+    @IBAction func backTapped(_ sender: Any) {
+        self.navigationController?.performSegue(withIdentifier: "BackToSearch", sender: nil)
+    }
+    
 }

@@ -9,6 +9,8 @@
 import UIKit
 import SDWebImage
 import CoreLocation
+import FirebaseDatabase
+import FirebaseAuth
 
 class MainViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource, UITabBarDelegate {
     
@@ -31,6 +33,8 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, UITableVi
         self.tabBar.selectedItem = self.tabBar.items?[0]
         tabBar.delegate = self
         
+        checkIfAddressExists()
+        
         // request authorization for location
         self.locationManager.requestWhenInUseAuthorization()
         
@@ -50,27 +54,100 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, UITableVi
         imageView.contentMode = UIViewContentMode.scaleAspectFit
         self.imageNavigationItem.titleView = imageView*/
         
-        self.imageNavigationItem.title = "E-chase"
-        self.navigationBar.alpha = 1
-        self.navigationBar.barTintColor = UIColor.white
-        self.navigationBar.titleTextAttributes = [ NSFontAttributeName: UIFont(name: "Roboto-Light", size: 24)!, NSForegroundColorAttributeName: UIColor.init(red: 49/255, green: 146/255, blue: 210/255, alpha: 1)]
+        self.navigationController?.navigationItem.title = "E-chase"        
+        self.navigationController?.navigationBar.alpha = 1
+        self.navigationController?.navigationBar.barTintColor = UIColor.white
+        self.navigationController?.navigationBar.titleTextAttributes = [ NSFontAttributeName: UIFont(name: "Roboto-Light", size: 24)!, NSForegroundColorAttributeName: UIColor.init(red: 49/255, green: 146/255, blue: 210/255, alpha: 1)]
         
         // Do any additional setup after loading the view.
     }
 
+    func checkIfAddressExists() {
+        if let uid = FIRAuth.auth()?.currentUser?.uid {
+            FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                if let userDictionary = snapshot.value as? [String: Any] {
+                    if let address = userDictionary["address"] as? String {
+                        // address already exists
+                        if address == "" {
+                            let alert = UIAlertController(title: "Add Street Address", message: "You need to add a street address for deliveries.", preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "Continue", style: .default, handler: { (action) in
+                                let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddAddressVC")
+                                self.navigationController?.present(vc!, animated: false, completion: nil)
+                            }))
+                            self.present(alert, animated: true, completion: nil)
+                        }
+                    } else {
+                        // address does not exist, present alert
+                        let alert = UIAlertController(title: "Add Street Address", message: "You need to add a street address for deliveries.", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "Continue", style: .default, handler: { (action) in
+                            let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddAddressVC")
+                            self.navigationController?.present(vc!, animated: false, completion: nil)
+                        }))
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                }
+            })
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 
+    func scanCouriers(coordinates: CLLocationCoordinate2D) {
+        CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: coordinates.latitude, longitude: coordinates.longitude),
+                                            completionHandler: {(placemarks, error) -> Void in
+                                                
+                                                if error != nil {
+                                                    print("Reverse geocoder failed with error" + error!.localizedDescription)
+                                                    return
+                                                }
+                                                
+                                                if placemarks!.count > 0 {
+                                                    let pm = placemarks![0]
+                                                    if let c = pm.locality, let s = pm.administrativeArea { // city of place mark
+                                                        print("CITY: \(c), STATE: \(s)")
+                                                        let region = "\(c), \(s)"
+                                                        print("REGION: \(region)")
+                                                        FIRDatabase.database().reference().child("couriers").queryOrdered(byChild: "region").queryEqual(toValue: region).observeSingleEvent(of: .value, with: { (snapshot) in
+                                                            if let couriersDictionary = snapshot.value as? [String: Any] {
+                                                                if couriersDictionary.count > 0 {
+                                                                    // there are drivers
+                                                                } else {
+                                                                    // no drivers
+                                                                    let alert = UIAlertController(title: "Sorry!", message: "Unfortunately, we currently do not support your city for E-chase delivery. Please check back later!", preferredStyle: .alert)
+                                                                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                                                                    alert.view.tintColor = UIColor.red
+                                                                    self.present(alert, animated: true, completion: nil)
+                                                                }
+                                                            } else {
+                                                                // no drivers
+                                                                let alert = UIAlertController(title: "Sorry!", message: "Unfortunately, we currently do not support your city for E-chase delivery. Please check back later!", preferredStyle: .alert)
+                                                                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                                                                alert.view.tintColor = UIColor.red
+                                                                self.present(alert, animated: true, completion: nil)
+                                                            }
+                                                        })
+                                                    }
+                                                } else {
+                                                    print("Problem with the data received from geocoder")
+                                                }
+        })
+    }
+    
     func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         print("TabBarItem selected, tag: \(item.tag)")
         if item.tag == 0 {
             // we're here
         } else if item.tag == 1 {
-            
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "OrdersVC")
+            self.present(vc!, animated: false, completion: nil)
         } else if item.tag == 2 {
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "CartVC")
+            self.present(vc!, animated: false, completion: nil)
+        } else if item.tag == 3 {
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "AccountVC")
             self.present(vc!, animated: false, completion: nil)
         }
     }
@@ -79,7 +156,9 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, UITableVi
         let locValue:CLLocationCoordinate2D = manager.location!.coordinate
         if !foundPlaces {
             foundPlaces = true
+            GlobalVariables.location = manager.location
             fetchPlacesNearCoordinate(coordinate: locValue, radius: 5000.0, name: "")
+            scanCouriers(coordinates: locValue)
         }
     }
     
@@ -165,7 +244,7 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, UITableVi
     @IBAction func searchTapped(sender: Any) {
         if let searchQuery = self.searchTextField.text {
             GlobalVariables.SEARCH_QUERY = searchQuery
-            self.performSegue(withIdentifier: "SearchTappedToViewProducts", sender: nil)
+            self.navigationController?.performSegue(withIdentifier: "SearchTappedToViewProducts", sender: nil)
         }
     }
     

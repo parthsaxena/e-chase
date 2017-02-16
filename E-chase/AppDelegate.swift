@@ -20,6 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FIRApp.configure()
         
+        if FIRAuth.auth()?.currentUser != nil {
+            self.window?.rootViewController = self.window?.rootViewController?.storyboard?.instantiateViewController(withIdentifier: "MainVC")
+        }
+        
         return true
     }
 

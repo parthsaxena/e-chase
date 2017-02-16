@@ -17,12 +17,23 @@ target 'E-chase' do
   pod 'Firebase/Messaging'
   pod 'Firebase/RemoteConfig'
   pod 'Firebase/Storage'
+  pod 'GeoFire', :git => 'https://github.com/firebase/geofire-objc.git' 
   
   pod 'GooglePlaces'
   pod 'GooglePlacePicker'
   pod 'GoogleMaps'
 
   pod 'SDWebImage', '~>3.8'
+
+  pod 'GradientCircularProgress', :git => 'https://github.com/keygx/GradientCircularProgress'
+
+  post_install do |installer|
+        installer.pods_project.targets.each do |target|
+            target.build_configurations.each do |config|
+                config.build_settings['SWIFT_VERSION'] = '3.0'
+            end
+        end
+  end
 
   target 'E-chaseTests' do
     inherit! :search_paths
