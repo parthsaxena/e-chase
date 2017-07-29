@@ -18,6 +18,7 @@ class AddAddressViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var searchResults = [MKLocalSearchCompletion]()
     var searchCompleter: MKLocalSearchCompleter!
+    var textAutoChanged = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -131,6 +132,8 @@ class AddAddressViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.resultsTableView.isHidden = true
+        self.textAutoChanged = true
         let searchResult = self.searchResults[indexPath.row]
         self.addressTextField.text = searchResult.title
         self.resultsTableView.deselectRow(at: indexPath, animated: false)
@@ -139,6 +142,14 @@ class AddAddressViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @IBAction func textFieldChanged(_ sender: Any) {
+        if self.resultsTableView.isHidden {
+            if self.textAutoChanged == false {
+                self.resultsTableView.isHidden = true
+                self.textAutoChanged = false
+            } else {
+                self.textAutoChanged = false
+            }
+        }
         let searchQuery = self.addressTextField.text
         searchCompleter.queryFragment = searchQuery!
     }
@@ -154,10 +165,27 @@ class AddAddressViewController: UIViewController, UITableViewDelegate, UITableVi
             
             let alert = UIAlertController(title: "Awesome!", message: "We've added that address to your account.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
-                // go back to account
-                self.navigationController?.performSegue(withIdentifier: "AddressToAccount", sender: nil)
+                if GlobalVariables.noAddress {
+                    // go to home
+                    let vc = self.storyboard?.instantiateViewController(withIdentifier: "MainVC")
+                    self.present(vc!, animated: false, completion: nil)
+                } else {
+                    // go back to account
+                    self.navigationController?.performSegue(withIdentifier: "AddressToAccount", sender: nil)
+                }
             }))
             self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    @IBAction func cancelTapped(sender: Any) {
+        if GlobalVariables.noAddress {
+            // go to home
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "MainVC")
+            self.present(vc!, animated: false, completion: nil)
+        } else {
+            // go back to account
+            self.navigationController?.performSegue(withIdentifier: "AddressToAccount", sender: nil)
         }
     }
     

@@ -9,11 +9,15 @@
 import UIKit
 import FirebaseAuth
 import FirebaseDatabase
+import GradientCircularProgress
 
 class AccountViewController: UIViewController, UITabBarDelegate {
 
     @IBOutlet weak var tabBar: UITabBar!
     @IBOutlet weak var fullNameLabel: UILabel!
+    
+    var progress: GradientCircularProgress!
+    var blurEffectView: UIVisualEffectView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,13 +26,22 @@ class AccountViewController: UIViewController, UITabBarDelegate {
         self.tabBar.tintColor = UIColor(red: 49/255, green: 146/255, blue: 210/255, alpha: 1.0)
         tabBar.selectedItem = tabBar.items?[3]
         
+        progress = GradientCircularProgress()
+        DispatchQueue.main.async {
+            let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.regular)
+            self.blurEffectView = UIVisualEffectView(effect: blurEffect)
+            self.blurEffectView.frame = self.view.bounds
+            self.blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            self.view.addSubview(self.blurEffectView)
+            self.progress.show(style: LoadingStyle())
+        }
+        
         getUserData()
         
         self.navigationController?.navigationItem.title = "Account"
         self.navigationController?.navigationBar.alpha = 1
         self.navigationController?.navigationBar.barTintColor = UIColor.white
         self.navigationController?.navigationBar.titleTextAttributes = [ NSFontAttributeName: UIFont(name: "Roboto-Light", size: 24)!, NSForegroundColorAttributeName: UIColor.init(red: 49/255, green: 146/255, blue: 210/255, alpha: 1)]
-        
         
         // Do any additional setup after loading the view.
     }
@@ -43,6 +56,14 @@ class AccountViewController: UIViewController, UITabBarDelegate {
             FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
                 if let userDictionary = snapshot.value as? [String: Any] {
                     if let fullName = userDictionary["fullname"] as? String {
+                        DispatchQueue.main.async {
+                            self.progress.dismiss()
+                            UIView.animate(withDuration: 0.25, animations: { 
+                                self.blurEffectView.effect = nil                                
+                            }, completion: { (success) in
+                                self.blurEffectView.removeFromSuperview()
+                            })
+                        }
                         self.fullNameLabel.text = fullName
                     }
                 }

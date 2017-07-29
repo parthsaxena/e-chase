@@ -16,6 +16,10 @@ struct GlobalVariables {
     static let MAPS_LOCATION_QUERY_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
     static var SEARCH_QUERY = ""
     
+    static var noAddress = false
+    
+    static var orderViewingID = ""
+    
     static var productViewing: [AnyObject]!
     static var productsInCart: [AnyObject]?
     

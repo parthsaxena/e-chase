@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import GradientCircularProgress
 
 class OrdersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarDelegate {
 
@@ -16,8 +17,21 @@ class OrdersViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var tabBar: UITabBar!
     @IBOutlet weak var emptyLabel: UILabel!
     
+    var blurEffectView: UIVisualEffectView!
+    var progress: GradientCircularProgress!
+    
     override func viewDidLoad() {
         super.viewDidLoad()                        
+        
+        progress = GradientCircularProgress()
+        DispatchQueue.main.async {
+            let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.regular)
+            self.blurEffectView = UIVisualEffectView(effect: blurEffect)
+            self.blurEffectView.frame = self.view.bounds
+            self.blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            self.view.addSubview(self.blurEffectView)
+            self.progress.show(style: LoadingStyle())
+        }
         
         ordersTableView.delegate = self
         ordersTableView.dataSource = self
@@ -86,10 +100,27 @@ class OrdersViewController: UIViewController, UITableViewDelegate, UITableViewDa
                             }
                         }
                     }
-                    self.ordersTableView.reloadData()
+                    DispatchQueue.main.async {
+                        self.ordersTableView.reloadData()
+                        self.progress.dismiss()
+                        UIView.animate(withDuration: 0.25, animations: {
+                            self.blurEffectView.effect = nil
+                        }, completion: { (success) in
+                            self.blurEffectView.removeFromSuperview()
+                        })
+                    }
                 } else {
                     print("no orders")
-                    self.emptyLabel.alpha = 1
+                    DispatchQueue.main.async {
+                        self.ordersTableView.reloadData()
+                        self.progress.dismiss()
+                        UIView.animate(withDuration: 0.25, animations: {
+                            self.blurEffectView.effect = nil
+                            self.emptyLabel.alpha = 1
+                        }, completion: { (success) in
+                            self.blurEffectView.removeFromSuperview()
+                        })
+                    }
                 }
             })
         }
@@ -102,7 +133,10 @@ class OrdersViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let order = self.orders[indexPath.row] as? [String: Any]
         if order?["orderTaken"] as? String == "false" {
             // order is processing
-            cell.statusLabel.text = "Order Processing"
+            cell.statusLabel.text = "Order Received"
+        } else if order?["orderTaken"] as? String == "true" {
+            // order has driver
+            cell.statusLabel.text = "Driver En Route"
         }
         if let json = order?["json"] as? [Any] {
             let count = json.count
@@ -114,6 +148,14 @@ class OrdersViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
 
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let order = self.orders[indexPath.row] as? [String: Any]
+        if let orderID = order?["id"] as? String {
+            GlobalVariables.orderViewingID = orderID
+        }
+        self.navigationController?.performSegue(withIdentifier: "OrdersToOrder", sender: nil)
     }
 
     /*

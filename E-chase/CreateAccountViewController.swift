@@ -8,12 +8,16 @@
 
 import UIKit
 import Firebase
+import GradientCircularProgress
 
 class CreateAccountViewController: UIViewController {
 
     @IBOutlet weak var fullNameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    
+    var progress: GradientCircularProgress!
+    var blurEffectView: UIVisualEffectView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +30,8 @@ class CreateAccountViewController: UIViewController {
         self.emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...",
                                                                        attributes: [NSForegroundColorAttributeName: UIColor.white])
         self.passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...",                                                               attributes: [NSForegroundColorAttributeName: UIColor.white])
+        
+        progress = GradientCircularProgress()
     }
 
     override func didReceiveMemoryWarning() {
@@ -35,12 +41,30 @@ class CreateAccountViewController: UIViewController {
     
     @IBAction func createAccountTapped(sender: Any) {
         self.view.endEditing(true)
+        DispatchQueue.main.async {
+            let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.regular)
+            self.blurEffectView = UIVisualEffectView()
+            self.blurEffectView.frame = self.view.bounds
+            self.blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            self.view.addSubview(self.blurEffectView)
+            UIView.animate(withDuration: 0.25, animations: { 
+                self.blurEffectView.effect = blurEffect
+            })
+            self.progress.show(style: LoadingStyle())
+        }
         if let fullName = self.fullNameTextField.text, let email = self.emailTextField.text, let password = self.passwordTextField.text {
             self.createAccount(fullName: fullName, email: email, password: password, completion: { (success) in
                 if success {
                     // successfully created user's account
                     print("Successfully created user's account")
-                    
+                    DispatchQueue.main.async {
+                        self.progress.dismiss()
+                        UIView.animate(withDuration: 0.25, animations: {
+                            self.blurEffectView.effect = nil
+                        }, completion: { (success) in
+                            self.blurEffectView.removeFromSuperview()
+                        })
+                    }
                     let alert = UIAlertController(title: "Awesome!", message: "Your account has been created. Let's get started!", preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
                         DispatchQueue.main.async {
@@ -51,6 +75,14 @@ class CreateAccountViewController: UIViewController {
                 } else {
                     // failed to create user's account
                     print("Failed to create user's account")
+                    DispatchQueue.main.async {
+                        self.progress.dismiss()
+                        UIView.animate(withDuration: 0.25, animations: {
+                            self.blurEffectView.effect = nil
+                        }, completion: { (success) in
+                            self.blurEffectView.removeFromSuperview()
+                        })
+                    }
                     let alert = UIAlertController(title: "Sorry!", message: "There was an error creating your account...", preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                     alert.view.tintColor = UIColor.red

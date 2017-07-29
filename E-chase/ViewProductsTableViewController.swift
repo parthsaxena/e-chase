@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import GradientCircularProgress
 
 class ViewProductsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate, UITabBarDelegate {
     
@@ -18,13 +19,28 @@ class ViewProductsViewController: UIViewController, UITableViewDelegate, UITable
     @IBOutlet weak var tableView: UITableView!
     var products = NSMutableArray()
     
+    @IBOutlet weak var noResultsLabel: UILabel!
+    
     let locationManager = CLLocationManager()
     
     var foundPlaces = false
     
+    var blurEffectView: UIVisualEffectView!
+    var progress: GradientCircularProgress!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        progress = GradientCircularProgress()
+        DispatchQueue.main.async {
+            let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.regular)
+            self.blurEffectView = UIVisualEffectView(effect: blurEffect)
+            self.blurEffectView.frame = self.view.bounds
+            self.blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            self.view.addSubview(self.blurEffectView)
+            self.progress.show(style: LoadingStyle())
+        }
+        
         self.tabBar.tintColor = UIColor(red: 49/255, green: 146/255, blue: 210/255, alpha: 1.0)
         self.tabBar.selectedItem = self.tabBar.items?[0]
         tabBar.delegate = self
@@ -123,6 +139,18 @@ class ViewProductsViewController: UIViewController, UITableViewDelegate, UITable
                         }
                         DispatchQueue.main.async {
                             self.tableView.reloadData()
+                            if stores.count == 0 {
+                                // no results
+                                print("No search results")
+                                self.tableView.isHidden = true
+                                self.noResultsLabel.alpha = 1
+                            }
+                            self.progress.dismiss()
+                            UIView.animate(withDuration: 0.25, animations: {
+                                self.blurEffectView.effect = nil
+                            }, completion: { (success) in
+                                self.blurEffectView.removeFromSuperview()
+                            })
                         }
                     } else {
                         print("Couldn't cast, \(json["stores"])")

@@ -9,6 +9,8 @@
 import UIKit
 import Firebase
 import GeoFire
+import GradientCircularProgress
+import LocalAuthentication
 
 class CartTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarDelegate {
 
@@ -37,6 +39,8 @@ class CartTableViewController: UIViewController, UITableViewDelegate, UITableVie
     var tax = 0.00
     var total = 0.00
     
+    var progress: GradientCircularProgress!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -51,6 +55,7 @@ class CartTableViewController: UIViewController, UITableViewDelegate, UITableVie
         
         cartTableView.delegate = self
         cartTableView.dataSource = self
+        
         loadCartProducts()
         
         // Uncomment the following line to preserve selection between presentations
@@ -60,6 +65,10 @@ class CartTableViewController: UIViewController, UITableViewDelegate, UITableVie
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+    }
+    
     func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         if item.tag == 0 {
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "MainVC")
@@ -125,6 +134,7 @@ class CartTableViewController: UIViewController, UITableViewDelegate, UITableVie
             self.emptyCartLabel.alpha = 1
         }
         cartTableView.reloadData()
+        print("dismissed progress")
     }
 
     // MARK: - Table view data source
@@ -169,60 +179,113 @@ class CartTableViewController: UIViewController, UITableViewDelegate, UITableVie
             alert.dismiss(animated: true, completion: nil)
         }))
         alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
-            if let uid = FIRAuth.auth()?.currentUser?.uid {
-                FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-                    if let userDictionary = snapshot.value as? [String: Any] {
-                        if let address = userDictionary["address"] as? String {
-                            if address == "" {
-                                let alert = UIAlertController(title: "Add Street Address", message: "You need to add a street address for deliveries.", preferredStyle: .alert)
-                                alert.addAction(UIAlertAction(title: "Continue", style: .default, handler: { (action) in
-                                    let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddAddressVC")
-                                    self.navigationController?.present(vc!, animated: false, completion: nil)
-                                }))
+            
+            // Authenticate with Touch ID
+            let context = LAContext()
+            var error: NSError?
+            
+            if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+                // Device supports Touch ID
+                let reason = "Authenticate Purchase."
+                context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason, reply: { (success, authenticationError) in
+                    DispatchQueue.main.async {
+                        if success {
+                            // authenticated
+                            self.checkoutProcess()
+                        } else {
+                            let alert = UIAlertController(title: "Authentication Failed", message: "Sorry, please try again.", preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                            alert.view.tintColor = UIColor.red
+                            self.present(alert, animated: true, completion: nil)
+                        }
+                    }
+                })
+            } else {
+                // Device does not support Touch ID, authenticate with account password
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "Authenticate Purchase", message: "Enter your E-chase password to complete your purchase.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                    alert.addAction(UIAlertAction(title: "Continue", style: .default, handler: { (action) in
+                        let passwordTextField = alert.textFields![0] as UITextField
+                        FIRAuth.auth()?.signIn(withEmail: (FIRAuth.auth()?.currentUser?.email)!, password: passwordTextField.text!, completion: { (user, error) in
+                            if error != nil {
+                                // authentication failed
+                                let alert = UIAlertController(title: "Authentication Failed", message: "Sorry, please try again.", preferredStyle: .alert)
+                                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                                alert.view.tintColor = UIColor.red
                                 self.present(alert, animated: true, completion: nil)
                             } else {
-                                // user has address, we can continue to make the delivery
-                                let data = try! JSONSerialization.data(withJSONObject: GlobalVariables.productsInCart!, options: [])
-                                let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
-                                if let uid = FIRAuth.auth()?.currentUser?.uid {
-                                    let ref = FIRDatabase.database().reference().child("orders").childByAutoId()
-                                    let key = ref.key
-                                    ref.setValue(["json":GlobalVariables.productsInCart!, "uid":uid, "id":key, "active":"true", "courierUID":"", "orderTaken":"false"])
-                                    
-                                    let locationRef = GeoFire(firebaseRef: FIRDatabase.database().reference().child("orders_locations"))
-                                    locationRef?.setLocation(GlobalVariables.location, forKey: key, withCompletionBlock: { (error) in
-                                        if error != nil {
-                                            print("An error occurred while saving the location of the order, \(error?.localizedDescription)")
-                                            let alert = UIAlertController(title: "Error", message: "There was an issue while processing your order...", preferredStyle: .alert)
-                                            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                                            self.present(alert, animated: true, completion: nil)
-                                        } else {
-                                            print("Saved post location")
-                                        }
-                                    })
-                                    
-                                    let alert = UIAlertController(title: "Awesome!", message: "Your order has been placed. Track your order through the orders page.", preferredStyle: .alert)
-                                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
-                                        let vc = self.storyboard?.instantiateViewController(withIdentifier: "OrdersVC")
-                                        self.present(vc!, animated: false, completion: nil)
-                                    }))
-                                    self.present(alert, animated: true, completion: nil)
-                                }
+                                // authenticated
+                                self.checkoutProcess()
                             }
-                        } else {
-                            // address does not exist, present alert
+                        })
+                    }))
+                    alert.addTextField(configurationHandler: { (textField: UITextField) in
+                        textField.placeholder = "Enter E-chase Password..."
+                        textField.isSecureTextEntry = true
+                    })
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func checkoutProcess() {
+        if let uid = FIRAuth.auth()?.currentUser?.uid {
+            FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                if let userDictionary = snapshot.value as? [String: Any] {
+                    if let address = userDictionary["address"] as? String {
+                        if address == "" {
                             let alert = UIAlertController(title: "Add Street Address", message: "You need to add a street address for deliveries.", preferredStyle: .alert)
                             alert.addAction(UIAlertAction(title: "Continue", style: .default, handler: { (action) in
                                 let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddAddressVC")
                                 self.navigationController?.present(vc!, animated: false, completion: nil)
                             }))
                             self.present(alert, animated: true, completion: nil)
+                        } else {
+                            // user has address, we can continue to make the delivery
+                            let data = try! JSONSerialization.data(withJSONObject: GlobalVariables.productsInCart!, options: [])
+                            let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
+                            if let uid = FIRAuth.auth()?.currentUser?.uid {
+                                let ref = FIRDatabase.database().reference().child("orders").childByAutoId()
+                                let key = ref.key
+                                ref.setValue(["json":GlobalVariables.productsInCart!, "uid":uid, "id":key, "active":"true", "courierUID":"", "orderTaken":"false"])
+                                
+                                let locationRef = GeoFire(firebaseRef: FIRDatabase.database().reference().child("orders_locations"))
+                                locationRef?.setLocation(GlobalVariables.location, forKey: key, withCompletionBlock: { (error) in
+                                    if error != nil {
+                                        print("An error occurred while saving the location of the order, \(error?.localizedDescription)")
+                                        let alert = UIAlertController(title: "Error", message: "There was an issue while processing your order...", preferredStyle: .alert)
+                                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                                        self.present(alert, animated: true, completion: nil)
+                                    } else {
+                                        print("Saved post location")
+                                    }
+                                })
+                                
+                                GlobalVariables.productsInCart = nil
+                                
+                                let alert = UIAlertController(title: "Awesome!", message: "Your order has been placed. Track your order through the orders page.", preferredStyle: .alert)
+                                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                                    let vc = self.storyboard?.instantiateViewController(withIdentifier: "OrdersVC")
+                                    self.present(vc!, animated: false, completion: nil)
+                                }))
+                                self.present(alert, animated: true, completion: nil)
+                            }
                         }
+                    } else {
+                        // address does not exist, present alert
+                        let alert = UIAlertController(title: "Add Street Address", message: "You need to add a street address for deliveries.", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "Continue", style: .default, handler: { (action) in
+                            let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddAddressVC")
+                            self.navigationController?.present(vc!, animated: false, completion: nil)
+                        }))
+                        self.present(alert, animated: true, completion: nil)
                     }
-                })
-            }
-        }))
-        self.present(alert, animated: true, completion: nil)
+                }
+            })
+        }
     }
     
     /*

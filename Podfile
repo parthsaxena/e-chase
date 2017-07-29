@@ -27,6 +27,9 @@ target 'E-chase' do
 
   pod 'GradientCircularProgress', :git => 'https://github.com/keygx/GradientCircularProgress'
 
+  pod 'IQKeyboardManagerSwift'
+  pod 'M13Checkbox'
+
   post_install do |installer|
         installer.pods_project.targets.each do |target|
             target.build_configurations.each do |config|

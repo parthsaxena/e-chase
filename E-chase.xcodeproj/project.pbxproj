@@ -47,6 +47,9 @@
 		8B3E2CBF1E20C83F006C99BF /* E_chaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3E2CBE1E20C83F006C99BF /* E_chaseUITests.swift */; };
 		8B7F3D341E501DAB00EF96AB /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7F3D331E501DAB00EF96AB /* AccountViewController.swift */; };
 		8B7F3D3A1E5254FD00EF96AB /* AddAddressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7F3D391E5254FD00EF96AB /* AddAddressViewController.swift */; };
+		8BCEEB471F293B4B00DD911A /* ViewOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCEEB461F293B4B00DD911A /* ViewOrderViewController.swift */; };
+		8BCEEB4A1F29F42200DD911A /* ViewOrderItemsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCEEB491F29F42200DD911A /* ViewOrderItemsTableViewCell.swift */; };
+		8BF4FB881E55A46B00388297 /* LoadingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BF4FB871E55A46A00388297 /* LoadingStyle.swift */; };
 		9BB01BD8A285A2BE36309767 /* Pods_E_chaseUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2A54D315EC894E8CAA52A3D /* Pods_E_chaseUITests.framework */; };
 		A5811C597579C2580BF9BDCD /* Pods_E_chase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02587B8492056C67398AA8E0 /* Pods_E_chase.framework */; };
 /* End PBXBuildFile section */
@@ -121,6 +124,9 @@
 		8B3E2CC01E20C83F006C99BF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8B7F3D331E501DAB00EF96AB /* AccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		8B7F3D391E5254FD00EF96AB /* AddAddressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddAddressViewController.swift; sourceTree = "<group>"; };
+		8BCEEB461F293B4B00DD911A /* ViewOrderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewOrderViewController.swift; sourceTree = "<group>"; };
+		8BCEEB491F29F42200DD911A /* ViewOrderItemsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewOrderItemsTableViewCell.swift; sourceTree = "<group>"; };
+		8BF4FB871E55A46A00388297 /* LoadingStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingStyle.swift; sourceTree = "<group>"; };
 		C486CE1A80AAF22F4617491B /* Pods-E-chase.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E-chase.debug.xcconfig"; path = "Pods/Target Support Files/Pods-E-chase/Pods-E-chase.debug.xcconfig"; sourceTree = "<group>"; };
 		F2A54D315EC894E8CAA52A3D /* Pods_E_chaseUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_E_chaseUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -238,6 +244,8 @@
 		8B3E2C9D1E20C83F006C99BF /* E-chase */ = {
 			isa = PBXGroup;
 			children = (
+				8BCEEB461F293B4B00DD911A /* ViewOrderViewController.swift */,
+				8BCEEB491F29F42200DD911A /* ViewOrderItemsTableViewCell.swift */,
 				8B1873471E540BC000ACF299 /* OrdersViewController.swift */,
 				8B1873491E540CE200ACF299 /* OrderTableViewCell.swift */,
 				8B01A40E1E21AABC00A37F6F /* GoogleService-Info.plist */,
@@ -247,6 +255,7 @@
 				8B2CF32F1E460D6C002FAC05 /* Login */,
 				8B190DDE1E2313E30032BC50 /* MainViewController.swift */,
 				8B190DE81E2367280032BC50 /* ViewProductsTableViewController.swift */,
+				8BF4FB871E55A46A00388297 /* LoadingStyle.swift */,
 				8B2CF3311E461170002FAC05 /* ProductViewController.swift */,
 				8B2CF3331E462CA7002FAC05 /* CartTableViewController.swift */,
 				8B7F3D331E501DAB00EF96AB /* AccountViewController.swift */,
@@ -370,7 +379,7 @@
 				TargetAttributes = {
 					8B3E2C9A1E20C83F006C99BF = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 642R9A5K29;
+						DevelopmentTeam = 69TNSUL7ZG;
 						ProvisioningStyle = Automatic;
 					};
 					8B3E2CAE1E20C83F006C99BF = {
@@ -460,7 +469,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		3B553ED0F1FB8BCFBB192696 /* [CP] Embed Pods Frameworks */ = {
@@ -535,7 +544,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		C57E493F268A7597682DA667 /* [CP] Check Pods Manifest.lock */ = {
@@ -550,7 +559,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		C97820A0C06066DF3B78089D /* [CP] Copy Pods Resources */ = {
@@ -593,17 +602,20 @@
 				8B190DDF1E2313E30032BC50 /* MainViewController.swift in Sources */,
 				8B01A4111E21AC1D00A37F6F /* CreateAccountViewController.swift in Sources */,
 				8B2CF3361E462E9E002FAC05 /* CartItemTableViewCell.swift in Sources */,
+				8BCEEB471F293B4B00DD911A /* ViewOrderViewController.swift in Sources */,
 				8B18734A1E540CE200ACF299 /* OrderTableViewCell.swift in Sources */,
 				8B190DED1E2370D10032BC50 /* SegueFromRight.swift in Sources */,
 				8B190DE91E2367280032BC50 /* ViewProductsTableViewController.swift in Sources */,
 				8B190DE11E2329370032BC50 /* GlobalVariables.swift in Sources */,
 				8B01A4181E21B36800A37F6F /* BottomToTop.swift in Sources */,
+				8BF4FB881E55A46B00388297 /* LoadingStyle.swift in Sources */,
 				8B3E2CA11E20C83F006C99BF /* LogInViewController.swift in Sources */,
 				8B7F3D341E501DAB00EF96AB /* AccountViewController.swift in Sources */,
 				8B01A4131E21B16D00A37F6F /* SegueFromLeft.swift in Sources */,
 				8B1873441E52B16300ACF299 /* AddressTableViewCell.swift in Sources */,
 				8B11D27B1E3F161500CC46B5 /* ViewController.swift in Sources */,
 				8B7F3D3A1E5254FD00EF96AB /* AddAddressViewController.swift in Sources */,
+				8BCEEB4A1F29F42200DD911A /* ViewOrderItemsTableViewCell.swift in Sources */,
 				8B190DEB1E2367B10032BC50 /* ProductTableViewCell.swift in Sources */,
 				8B2CF3321E461170002FAC05 /* ProductViewController.swift in Sources */,
 				8B1873481E540BC000ACF299 /* OrdersViewController.swift in Sources */,
@@ -761,7 +773,8 @@
 			baseConfigurationReference = C486CE1A80AAF22F4617491B /* Pods-E-chase.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 642R9A5K29;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 69TNSUL7ZG;
 				INFOPLIST_FILE = "E-chase/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.parthsaxena.E-chase";
@@ -775,7 +788,8 @@
 			baseConfigurationReference = 77DF84460DB3747F4F63C479 /* Pods-E-chase.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 642R9A5K29;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 69TNSUL7ZG;
 				INFOPLIST_FILE = "E-chase/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.parthsaxena.E-chase";

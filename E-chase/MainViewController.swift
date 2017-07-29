@@ -11,8 +11,9 @@ import SDWebImage
 import CoreLocation
 import FirebaseDatabase
 import FirebaseAuth
+import GradientCircularProgress
 
-class MainViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource, UITabBarDelegate {
+class MainViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource, UITabBarDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var tabBar: UITabBar!
     
@@ -26,14 +27,27 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, UITableVi
     var products = NSMutableArray()
     var foundPlaces = false
     
+    var progress: GradientCircularProgress!
+    var blurEffectView: UIVisualEffectView!
+    
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad()                        
+        
+        progress = GradientCircularProgress()
+        DispatchQueue.main.async {
+            let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.regular)
+            self.blurEffectView = UIVisualEffectView(effect: blurEffect)
+            self.blurEffectView.frame = self.view.bounds
+            self.blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            self.view.addSubview(self.blurEffectView)
+            self.progress.show(style: LoadingStyle())
+        }
         
          self.tabBar.tintColor = UIColor(red: 49/255, green: 146/255, blue: 210/255, alpha: 1.0)
         self.tabBar.selectedItem = self.tabBar.items?[0]
         tabBar.delegate = self
         
-        checkIfAddressExists()
+        searchTextField.delegate = self
         
         // request authorization for location
         self.locationManager.requestWhenInUseAuthorization()
@@ -62,6 +76,15 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, UITableVi
         // Do any additional setup after loading the view.
     }
 
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let searchQuery = self.searchTextField.text {
+            GlobalVariables.SEARCH_QUERY = searchQuery
+            textField.resignFirstResponder()
+            self.navigationController?.performSegue(withIdentifier: "SearchTappedToViewProducts", sender: nil)
+        }
+        return true
+    }
+    
     func checkIfAddressExists() {
         if let uid = FIRAuth.auth()?.currentUser?.uid {
             FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -71,10 +94,26 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, UITableVi
                         if address == "" {
                             let alert = UIAlertController(title: "Add Street Address", message: "You need to add a street address for deliveries.", preferredStyle: .alert)
                             alert.addAction(UIAlertAction(title: "Continue", style: .default, handler: { (action) in
+                                GlobalVariables.noAddress = true
                                 let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddAddressVC")
                                 self.navigationController?.present(vc!, animated: false, completion: nil)
                             }))
                             self.present(alert, animated: true, completion: nil)
+                        } else {
+                            // user already has address
+                            let launchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
+                            if launchedBefore  {
+                                print("Not first launch.")
+                            } else {
+                                print("First launch, setting UserDefault.")
+                                UserDefaults.standard.set(true, forKey: "launchedBefore")
+                                let alert = UIAlertController(title: "Hint", message: "Start by searching for a product...", preferredStyle: .alert)
+                                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                                    self.searchTextField.becomeFirstResponder()
+                                    self.checkIfAddressExists()
+                                }))
+                                self.present(alert, animated: true, completion: nil)
+                            }                            
                         }
                     } else {
                         // address does not exist, present alert
@@ -189,6 +228,13 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, UITableVi
                         }
                         DispatchQueue.main.async {
                             self.placesTableView.reloadData()
+                            self.progress.dismiss()
+                            self.checkIfAddressExists()
+                            UIView.animate(withDuration: 0.25, animations: {
+                                self.blurEffectView.effect = nil
+                            }, completion: { (success) in
+                                self.blurEffectView.removeFromSuperview()
+                            })
                         }
                     } else {
                         print("Couldn't cast, \(json["locations"])")

@@ -24,6 +24,16 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>IQKeyboardManagerSwift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>M13Checkbox.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-E-chase.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -57,7 +67,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>1E33867CE56576551845F04E08003542</key>
+		<key>20A9DD9ABBF08BC57372A26C35327BF1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>2C7FF35DBFB85B768F3BA4570B789305</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -67,7 +82,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A468A1013A55C8C329B792C11434AF1A</key>
+		<key>4DC059E04CBA98AEDDB5C34E02D551E9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AFD492F5195BD8457CBAD551C295C104</key>
 		<dict>
 			<key>primary</key>
 			<true/>
